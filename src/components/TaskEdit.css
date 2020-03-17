@@ -1,0 +1,11 @@
+.color-picker input[name="color"] {
+    cursor: pointer;
+}
+
+.color-picker .MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: none;
+}
+
+.campaign-dialog .MuiDialog-paper {
+    overflow-y: initial;
+}

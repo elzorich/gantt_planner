@@ -7,13 +7,14 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import ColorPicker from "material-ui-color-picker";
+import "./TaskEdit.css";
 
 export interface Campaign {
   campaign: string;
   type: string;
   startTime: string;
   endTime: string;
-  details: string;
   color: string;
   contents: Array<any>;
 }
@@ -30,7 +31,6 @@ export const TaskEdit = (props: TaskEditProps) => {
   const [changedCampaign, setChangedCampaign] = useState<Campaign>(
     props.campaignData
   );
-  console.log(changedCampaign);
 
   const handleClose = () => {
     props.onChildClick(false);
@@ -42,13 +42,18 @@ export const TaskEdit = (props: TaskEditProps) => {
       campaign: event.currentTarget.value
     });
   };
+  useEffect(() => {
+    let timer = setTimeout(() => setChangedCampaign(props.campaignData), 100);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [props.campaignData]);
 
   const saveCampaign = () => {
     const updatedTopics = produce(props.data, draftState => {
       const index = props.data.findIndex(
         topic => topic.campaign === props?.campaignData?.campaign
       );
-
       draftState.splice(index, 1, changedCampaign);
     });
 
@@ -61,73 +66,79 @@ export const TaskEdit = (props: TaskEditProps) => {
   };
 
   return (
-    <div>
-      <Dialog
-        open={props.isOpen}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">
-          {props.campaignData.campaign}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            onChange={event =>
-              changeCampaignData(event.currentTarget.value, "campaign")
-            }
-            type="text"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="startDate"
-            label=""
-            onChange={event =>
-              changeCampaignData(event.currentTarget.value, "startTime")
-            }
-            type="date"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="EndDate"
-            label=""
-            onChange={event =>
-              changeCampaignData(event.currentTarget.value, "endTime")
-            }
-            type="date"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="color"
-            label="Color"
-            onChange={event =>
-              changeCampaignData(event.currentTarget.value, "color")
-            }
-            type="text"
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={saveCampaign} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    props.campaignData && (
+      <div>
+        <Dialog
+          open={props.isOpen}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+          className="campaign-dialog"
+        >
+          <DialogTitle id="form-dialog-title">
+            {props.campaignData.campaign}
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              required
+              autoFocus
+              margin="dense"
+              id="name"
+              value={changedCampaign.campaign}
+              label={`Change the name for the ${props.campaignData.campaign} campaign`}
+              onChange={event =>
+                changeCampaignData(event.currentTarget.value, "campaign")
+              }
+              type="text"
+              fullWidth
+            />
+            <TextField
+              required
+              autoFocus
+              margin="dense"
+              id="startDate"
+              value={changedCampaign.startTime}
+              label=""
+              onChange={event =>
+                changeCampaignData(event.currentTarget.value, "startTime")
+              }
+              type="date"
+              fullWidth
+            />
+            <TextField
+              required
+              autoFocus
+              margin="dense"
+              id="EndDate"
+              value={changedCampaign.endTime}
+              label=""
+              onChange={event =>
+                changeCampaignData(event.currentTarget.value, "endTime")
+              }
+              type="date"
+              fullWidth
+            />
+            <DialogContentText>
+              Pick new color for the campaign:
+            </DialogContentText>
+            <ColorPicker
+              className="color-picker"
+              name="color"
+              style={{ backgroundColor: changedCampaign.color }}
+              defaultValue={changedCampaign.color}
+              value={changedCampaign.color}
+              onChange={color => changeCampaignData(color, "color")}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={saveCampaign} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
   );
 };

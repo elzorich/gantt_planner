@@ -5,118 +5,110 @@ import { Campaign } from "./components/TaskEdit";
 const MOCK_TOPICS: Campaign[] = [
   {
     campaign: "conceptualize",
-    type: "development",
-    startTime: "2020-2-28", //year/month/day
-    endTime: "2020-3-1",
-    details: "This actually didn't take any conceptualization",
+    type: "Topic1",
+    startTime: "2020-02-28", //year/month/day
+    endTime: "2020-03-01",
     contents: [
-      { name: "test", contentDate: "2020-2-28" },
-      { name: "test2", contentDate: "2020-3-03" }
+      { name: "test1", contentDate: "2020-02-28" },
+      { name: "test2", contentDate: "2020-02-29" }
     ],
-    color: "#00bee0"
+    color: "#0e0a0a"
   },
 
   {
     campaign: "sketch",
-    type: "development",
-    startTime: "2020-3-1",
-    endTime: "2020-3-6",
-    details: "No sketching either, really",
+    type: "Topic1",
+    startTime: "2020-03-01",
+    endTime: "2020-03-06",
     contents: [
-      { name: "test", contentDate: "2020-3-1" },
-      { name: "test2", contentDate: "2020-3-6" }
+      { name: "test3", contentDate: "2020-03-01" },
+      { name: "test4", contentDate: "2020-03-06" }
     ],
     color: "#00bee0"
   },
 
   {
     campaign: "color profiles",
-    type: "development",
-    startTime: "2020-3-6",
-    details: "No sketching either, really",
+    type: "Topic1",
+    startTime: "2020-03-06",
     contents: [
-      { name: "test", contentDate: "2020-3-6" },
-      { name: "test2", contentDate: "2020-3-9" }
+      { name: "test5", contentDate: "2020-03-06" },
+      { name: "test6", contentDate: "2020-03-09" }
     ],
-    endTime: "2020-3-9",
+    endTime: "2020-03-09",
     color: "#4bdc9d"
   },
 
   {
-    campaign: "HTML",
-    type: "coding",
-    startTime: "2020-3-2",
-    endTime: "2020-3-6",
-    details: "all three lines of it",
+    campaign: "TypeScript",
+    type: "Topic2",
+    startTime: "2020-03-02",
+    endTime: "2020-03-06",
     contents: [
-      { name: "test", contentDate: "2020-3-2" },
-      { name: "test2", contentDate: "2020-3-6" }
+      { name: "test7", contentDate: "2020-03-02" },
+      { name: "test8", contentDate: "2020-03-06" }
     ],
     color: "#ecc955"
   },
 
   {
-    campaign: "write the JS",
-    type: "coding",
-    startTime: "2020-3-6",
-    endTime: "2020-3-9",
+    campaign: "JS",
+    type: "Topic2",
+    startTime: "2020-03-06",
+    endTime: "2020-03-09",
     color: "grey",
     contents: [
-      { name: "test", contentDate: "2020-3-6" },
-      { name: "test2", contentDate: "2020-3-9" }
-    ],
-    details: "No sketching either, really"
+      { name: "test9", contentDate: "2020-03-06" },
+      { name: "test10", contentDate: "2020-03-09" }
+    ]
   },
 
   {
-    campaign: "advertise",
-    type: "promotion",
-    startTime: "2020-3-9",
-    endTime: "2020-3-12",
-    details: "This counts, right?",
+    campaign: "Add advertising",
+    type: "Topic3",
+    startTime: "2020-03-09",
+    endTime: "2020-03-12",
     contents: [
-      { name: "test", contentDate: "2020-3-9" },
-      { name: "test2", contentDate: "2020-3-12" }
+      { name: "test11", contentDate: "2020-03-09" },
+      { name: "test12", contentDate: "2020-03-12" }
     ],
-    color: "#c80101"
+    color: "#c143c1"
   },
 
   {
-    campaign: "spam links",
-    type: "promotion",
-    startTime: "2020-3-12",
-    endTime: "2020-3-14",
+    campaign: "Google campaign",
+    type: "Topic3",
+    startTime: "2020-03-12",
+    endTime: "2020-03-14",
     color: "#c80101",
     contents: [
-      { name: "test", contentDate: "2020-3-12" },
-      { name: "test2", contentDate: "2020-3-14" }
-    ],
-    details: "No sketching either, really"
+      { name: "test12", contentDate: "2020-03-12" },
+      { name: "test14", contentDate: "2020-03-14" }
+    ]
   },
   {
-    campaign: "BMW",
-    type: "celebration",
-    startTime: "2020-3-8",
-    endTime: "2020-3-13",
-    details: "All the things",
+    campaign: "Deploy",
+    type: "Topic4",
+    startTime: "2020-03-08",
+    endTime: "2020-03-13",
     contents: [
-      { name: "test", contentDate: "2020-3-8" },
-      { name: "test2", contentDate: "2020-3-13" }
+      { name: "test15", contentDate: "2020-03-08" },
+      { name: "test16", contentDate: "2020-03-13" },
+      { name: "testY", contentDate: "2020-03-12" }
     ],
     color: "#4c70ea"
   },
 
   {
     campaign: "John Reed",
-    type: "celebration",
-    startTime: "2020-3-13",
-    endTime: "2020-3-16",
+    type: "Topic4",
+    startTime: "2020-03-13",
+    endTime: "2020-03-16",
     color: "green",
     contents: [
-      { name: "test", contentDate: "2020-3-13" },
-      { name: "test2", contentDate: "2020-3-16" }
-    ],
-    details: "No sketching either, really"
+      { name: "test17", contentDate: "2020-03-13" },
+      { name: "test18", contentDate: "2020-03-16" }
+    ]
   }
 ];
 

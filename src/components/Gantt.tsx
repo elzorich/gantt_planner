@@ -1,10 +1,18 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TaskEdit, Campaign } from "./TaskEdit";
+import "./Gantt.css";
 import * as d3 from "d3";
 
 interface IProps {
   data: Campaign[];
   setTopics: (topics: Campaign[]) => void;
+}
+
+interface Contents {
+  name: string;
+  contentDate: string;
+  ySide: number;
+  color: string;
 }
 
 export const Gantt = (props: IProps) => {
@@ -31,6 +39,7 @@ export const Gantt = (props: IProps) => {
       .attr("id", "svg-viz");
     const dateFormat = d3.timeParse("%Y-%m-%d");
     let topics: any[] = [];
+    let contents: Contents[] = [];
     const svg = d3.select("#svg-viz");
 
     // Define timescale for the chart, based on the min and max date from the data
@@ -57,9 +66,23 @@ export const Gantt = (props: IProps) => {
       {}
     );
 
-    // const countsCats = JSON.stringify(distribution, null, 2);
+    //Add key and color property for every content for YAxis positioning and association with the topic
+    for (let i = 0; i < props.length; i++) {
+      for (let n = 0; n < props[i].contents.length; n++) {
+        //If user changes the color of campaign, add the same color to the content
+        if (props[i].contents[n].color) {
+          const newContent = { ...props[i].contents[n] };
+          newContent.color = props[i].color;
+          contents.push(newContent);
+        } else {
+          props[i].contents[n].ySide = props.indexOf(props[i]);
+          props[i].contents[n].color = props[i].color;
+          contents.push(props[i].contents[n]);
+        }
+      }
+    }
 
-    //Main title for the page
+    //Draw main title for the page
     const title = svg
       .append("text")
       .text("Gantt Project Planning")
@@ -68,8 +91,6 @@ export const Gantt = (props: IProps) => {
       .attr("text-anchor", "middle")
       .attr("font-size", 18)
       .attr("fill", "#009FFC");
-
-    title.exit().remove();
 
     const makeGrid = (
       theSidePad: string | number,
@@ -93,17 +114,9 @@ export const Gantt = (props: IProps) => {
         .attr("stroke", "none")
         .attr("font-size", 10)
         .attr("dy", "1em");
-
-      grid.exit().remove();
     };
 
-    const vertLabels = (
-      theGap: number,
-      theTopPad: number,
-      theSidePad: number,
-      theBarHeight: number,
-      theColorScale: d3.ScaleLinear<string, string>
-    ) => {
+    const vertLabels = (theGap: number, theTopPad: number) => {
       let prevGap = 0;
       const countTopics = (obj: { [x: string]: any }) => {
         for (const property in obj) {
@@ -124,7 +137,7 @@ export const Gantt = (props: IProps) => {
         })
         .attr("x", 10)
         .attr("y", function(d, i: any) {
-          if (!isNaN(i) && i > 0 && result[i - 1] !== undefined) {
+          if (i > 0) {
             const n: any = result[i - 1][1];
             const b: any = d[1];
             for (let j = 0; j < i; j++) {
@@ -149,7 +162,6 @@ export const Gantt = (props: IProps) => {
       theTopPad: number,
       theSidePad: number,
       theBarHeight: any,
-      theColorScale: d3.ScaleLinear<string, string>,
       w: number,
       h: number
     ) => {
@@ -178,17 +190,16 @@ export const Gantt = (props: IProps) => {
         .attr("class", "wrapper")
         .enter();
 
+      //Drawing campaign rectangles
       const innerRects = rectangles
         .append("rect")
         .attr("class", "campaign")
         .attr("rx", 3)
         .attr("ry", 3)
         .attr("x", function(d) {
-          console.log(new Date(d.startTime));
           return timeScale(new Date(d.startTime)) + theSidePad;
         })
         .attr("y", function(d, i) {
-          console.log(taskArr);
           return i * theGap + theTopPad;
         })
         .attr("width", function(d) {
@@ -202,16 +213,18 @@ export const Gantt = (props: IProps) => {
           return d.color;
         })
         .on("click", d => {
-          handleOpen(d); // passing campaign data
+          handleOpen(d); // passing campaign data to the state
         });
 
-      const contentsBlock = rectangles
+      //Entering list of contents for every campaign
+      const contentsBlock = svg
         .append("g")
         .attr("class", "contents-block")
         .selectAll(".campaign")
-        .data(d => d.contents)
+        .data(contents)
         .enter();
 
+      //Drawing contents rectangles
       const contentsRect = contentsBlock
         .append("rect")
         .attr("class", "content")
@@ -221,19 +234,16 @@ export const Gantt = (props: IProps) => {
           return timeScale(new Date(d.contentDate)) + theSidePad;
         })
         .attr("y", function(d, i) {
-          console.log(taskArr);
-          let num = 0;
-          for (let j = 0; j < taskArr.length; j++) {
-            console.log(j);
-            return j * theGap + theTopPad;
-          }
-          return num * theGap + theTopPad;
+          return d.ySide * theGap + theTopPad + theBarHeight;
         })
         .attr("width", 30)
         .attr("height", theBarHeight)
-        .attr("stroke", "none")
-        .attr("fill", "yellow");
+        .attr("stroke", "#fff")
+        .attr("fill", d => {
+          return d.color;
+        });
 
+      //Inserting name of the campaign
       const rectText = rectangles
         .append("text")
         .text(function(d) {
@@ -256,21 +266,32 @@ export const Gantt = (props: IProps) => {
         .attr("text-height", theBarHeight)
         .attr("fill", "#fff");
 
+      //Inserting name of the contents
+      const contentText = contentsBlock
+        .append("text")
+        .text(function(d) {
+          return d.name;
+        })
+        .attr("x", function(d) {
+          return timeScale(new Date(d.contentDate)) + theSidePad + 12;
+        })
+        .attr("y", function(d, i) {
+          return d.ySide * theGap + 14 + theTopPad + theBarHeight;
+        })
+        .attr("font-size", 11)
+        .attr("text-anchor", "middle")
+        .attr("text-height", theBarHeight)
+        .attr("fill", "#fff");
+
       bigRects.exit().remove();
       rectangles.exit().remove();
     };
 
     const makeGant = (tasks: any[], pageWidth: number, pageHeight: number) => {
       const barHeight = 20;
-      const gap = barHeight + 4;
+      const gap = barHeight * 2;
       const topPadding = 75;
       const sidePadding = 75;
-
-      const colorScale = d3
-        .scaleLinear<string>()
-        .domain([0, topics.length])
-        .range(["#00B9FA", "#F95002"])
-        .interpolate(d3.interpolateHcl);
 
       makeGrid(sidePadding, topPadding, pageWidth, pageHeight);
       drawRects(
@@ -279,35 +300,13 @@ export const Gantt = (props: IProps) => {
         topPadding,
         sidePadding,
         barHeight,
-        colorScale,
         pageWidth,
         pageHeight
       );
-      vertLabels(gap, topPadding, sidePadding, barHeight, colorScale);
+      vertLabels(gap, topPadding);
     };
 
     makeGant(props, w, h);
-
-    /*         // Bind D3 data
-        const update = svg
-          .append("g")
-          .selectAll("text")
-          .data(props.data);
-
-        // Enter new D3 elements
-        update
-          .enter()
-          .append("text")
-          .attr("x", (d, i) => i * 25)
-          .attr("y", 40)
-          .style("font-size", 24)
-          .text((d: number) => d);
-
-        // Update existing D3 elements
-        update.attr("x", (d, i) => i * 40).text((d: number) => d); */
-
-    /*         // Remove old D3 elements
-        update.exit().remove(); */
   };
 
   return (
