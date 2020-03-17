@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Gantt } from "./components/Gantt";
 import { Campaign } from "./components/TaskEdit";
+import "./App.css";
 
 const MOCK_TOPICS: Campaign[] = [
   {
@@ -12,7 +13,7 @@ const MOCK_TOPICS: Campaign[] = [
       { name: "test1", contentDate: "2020-02-28" },
       { name: "test2", contentDate: "2020-02-29" }
     ],
-    color: "#0e0a0a"
+    color: "#34a853"
   },
 
   {
@@ -120,6 +121,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header"></header>
+      <h2>Gantt Project Planning</h2>
       <Gantt data={topics} setTopics={setTopics} />
     </div>
   );

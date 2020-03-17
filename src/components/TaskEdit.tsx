@@ -36,12 +36,6 @@ export const TaskEdit = (props: TaskEditProps) => {
     props.onChildClick(false);
   };
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChangedCampaign({
-      ...changedCampaign,
-      campaign: event.currentTarget.value
-    });
-  };
   useEffect(() => {
     let timer = setTimeout(() => setChangedCampaign(props.campaignData), 100);
     return () => {

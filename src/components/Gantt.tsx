@@ -46,12 +46,8 @@ export const Gantt = (props: IProps) => {
     const timeScale = d3
       .scaleTime()
       .domain([
-        d3.min(props, function(d) {
-          return dateFormat(d.startTime);
-        }) as Date,
-        d3.max(props, function(d) {
-          return dateFormat(d.endTime);
-        }) as Date
+        d3.min(props, d => dateFormat(d.startTime)) as Date,
+        d3.max(props, d => dateFormat(d.endTime)) as Date
       ])
       .range([0, w - 150]);
 
@@ -82,16 +78,6 @@ export const Gantt = (props: IProps) => {
       }
     }
 
-    //Draw main title for the page
-    const title = svg
-      .append("text")
-      .text("Gantt Project Planning")
-      .attr("x", w / 2)
-      .attr("y", 25)
-      .attr("text-anchor", "middle")
-      .attr("font-size", 18)
-      .attr("fill", "#009FFC");
-
     const makeGrid = (
       theSidePad: string | number,
       theTopPad: number,
@@ -109,36 +95,26 @@ export const Gantt = (props: IProps) => {
         .attr("transform", "translate(" + theSidePad + ", " + (h - 50) + ")")
         .call(xAxis)
         .selectAll("text")
-        .style("text-anchor", "middle")
-        .attr("fill", "#000")
-        .attr("stroke", "none")
-        .attr("font-size", 10)
-        .attr("dy", "1em");
+        .attr("fill", "#3da0df")
+        .attr("font-size", 11);
     };
 
     const vertLabels = (theGap: number, theTopPad: number) => {
       let prevGap = 0;
-      const countTopics = (obj: { [x: string]: any }) => {
-        for (const property in obj) {
-          return obj[property];
-        }
-      };
 
       // Data for the axis
-      const result = Object.entries(distribution);
+      const yAxisDist = Object.entries(distribution);
       const axisText = svg
         .append("g")
         .selectAll("text")
-        .data(result)
+        .data(yAxisDist)
         .enter()
         .append("text")
-        .text(function(d) {
-          return d[0];
-        })
+        .text(d => d[0])
         .attr("x", 10)
-        .attr("y", function(d, i: any) {
+        .attr("y", (d, i) => {
           if (i > 0) {
-            const n: any = result[i - 1][1];
+            const n: any = yAxisDist[i - 1][1];
             const b: any = d[1];
             for (let j = 0; j < i; j++) {
               prevGap += n;
@@ -150,10 +126,8 @@ export const Gantt = (props: IProps) => {
             return (c * theGap) / 2 + theTopPad;
           }
         })
-        .attr("font-size", 11)
-        .attr("text-anchor", "start")
-        .attr("text-height", 14);
-      axisText.exit().remove();
+        .attr("font-size", 14)
+        .attr("text-anchor", "start");
     };
 
     const drawRects = (
@@ -172,16 +146,11 @@ export const Gantt = (props: IProps) => {
         .enter()
         .append("rect")
         .attr("x", 0)
-        .attr("y", function(d, i) {
-          return i * theGap + theTopPad - 2;
-        })
-        .attr("width", function(d) {
-          return w - theSidePad / 2;
-        })
+        .attr("y", (d, i) => i * theGap + theTopPad - 2)
+        .attr("width", d => w - theSidePad / 2)
         .attr("height", theGap)
-        .attr("stroke", "none")
         .attr("fill", "#3da0df")
-        .attr("opacity", 0.2);
+        .attr("opacity", 0.1);
 
       const rectangles = svg
         .append("g")
@@ -196,25 +165,15 @@ export const Gantt = (props: IProps) => {
         .attr("class", "campaign")
         .attr("rx", 3)
         .attr("ry", 3)
-        .attr("x", function(d) {
-          return timeScale(new Date(d.startTime)) + theSidePad;
-        })
-        .attr("y", function(d, i) {
-          return i * theGap + theTopPad;
-        })
-        .attr("width", function(d) {
-          return (
-            timeScale(new Date(d.endTime)) - timeScale(new Date(d.startTime))
-          );
-        })
+        .attr("x", d => timeScale(new Date(d.startTime)) + 67)
+        .attr("y", (d, i) => i * theGap + theTopPad)
+        .attr(
+          "width",
+          d => timeScale(new Date(d.endTime)) - timeScale(new Date(d.startTime))
+        )
         .attr("height", theBarHeight)
-        .attr("stroke", "none")
-        .attr("fill", function(d) {
-          return d.color;
-        })
-        .on("click", d => {
-          handleOpen(d); // passing campaign data to the state
-        });
+        .attr("fill", d => d.color)
+        .on("click", d => handleOpen(d)); // passing campaign data to the state);
 
       //Entering list of contents for every campaign
       const contentsBlock = svg
@@ -230,37 +189,27 @@ export const Gantt = (props: IProps) => {
         .attr("class", "content")
         .attr("rx", 3)
         .attr("ry", 3)
-        .attr("x", function(d) {
-          return timeScale(new Date(d.contentDate)) + theSidePad;
-        })
-        .attr("y", function(d, i) {
-          return d.ySide * theGap + theTopPad + theBarHeight;
-        })
+        .attr("x", d => timeScale(new Date(d.contentDate)) + 67)
+        .attr("y", (d, i) => d.ySide * theGap + theTopPad + theBarHeight)
         .attr("width", 30)
         .attr("height", theBarHeight)
         .attr("stroke", "#fff")
-        .attr("fill", d => {
-          return d.color;
-        });
+        .attr("fill", d => d.color);
 
       //Inserting name of the campaign
       const rectText = rectangles
         .append("text")
-        .text(function(d) {
-          return d.campaign;
-        })
-        .attr("x", function(d) {
-          return (
+        .text(d => d.campaign)
+        .attr(
+          "x",
+          d =>
             (timeScale(new Date(d.endTime)) -
               timeScale(new Date(d.startTime))) /
               2 +
             timeScale(new Date(d.startTime)) +
             theSidePad
-          );
-        })
-        .attr("y", function(d, i) {
-          return i * theGap + 14 + theTopPad;
-        })
+        )
+        .attr("y", (d, i) => i * theGap + 14 + theTopPad)
         .attr("font-size", 11)
         .attr("text-anchor", "middle")
         .attr("text-height", theBarHeight)
@@ -269,29 +218,20 @@ export const Gantt = (props: IProps) => {
       //Inserting name of the contents
       const contentText = contentsBlock
         .append("text")
-        .text(function(d) {
-          return d.name;
-        })
-        .attr("x", function(d) {
-          return timeScale(new Date(d.contentDate)) + theSidePad + 12;
-        })
-        .attr("y", function(d, i) {
-          return d.ySide * theGap + 14 + theTopPad + theBarHeight;
-        })
+        .text(d => d.name)
+        .attr("x", d => timeScale(new Date(d.contentDate)) + theSidePad + 12)
+        .attr("y", d => d.ySide * theGap + 14 + theTopPad + theBarHeight)
         .attr("font-size", 11)
         .attr("text-anchor", "middle")
         .attr("text-height", theBarHeight)
         .attr("fill", "#fff");
-
-      bigRects.exit().remove();
-      rectangles.exit().remove();
     };
 
     const makeGant = (tasks: any[], pageWidth: number, pageHeight: number) => {
       const barHeight = 20;
       const gap = barHeight * 2;
-      const topPadding = 75;
-      const sidePadding = 75;
+      const topPadding = 50;
+      const sidePadding = 70;
 
       makeGrid(sidePadding, topPadding, pageWidth, pageHeight);
       drawRects(
@@ -305,7 +245,6 @@ export const Gantt = (props: IProps) => {
       );
       vertLabels(gap, topPadding);
     };
-
     makeGant(props, w, h);
   };
 
