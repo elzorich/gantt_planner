@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Gantt } from "./components/Gantt";
-import { Campaign } from "./components/TaskEdit";
+import { Campaign } from "./types";
 import "./App.css";
 
 const MOCK_TOPICS: Campaign[] = [
   {
+    id: 1,
     campaign: "conceptualize",
     type: "Topic1",
     startTime: "2020-02-28", //year/month/day
@@ -17,6 +18,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 2,
     campaign: "sketch",
     type: "Topic1",
     startTime: "2020-03-01",
@@ -29,6 +31,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 3,
     campaign: "color profiles",
     type: "Topic1",
     startTime: "2020-03-06",
@@ -41,6 +44,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 4,
     campaign: "TypeScript",
     type: "Topic2",
     startTime: "2020-03-02",
@@ -53,6 +57,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 5,
     campaign: "JS",
     type: "Topic2",
     startTime: "2020-03-06",
@@ -65,6 +70,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 6,
     campaign: "Add advertising",
     type: "Topic3",
     startTime: "2020-03-09",
@@ -77,6 +83,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 7,
     campaign: "Google campaign",
     type: "Topic3",
     startTime: "2020-03-12",
@@ -88,6 +95,7 @@ const MOCK_TOPICS: Campaign[] = [
     ]
   },
   {
+    id: 8,
     campaign: "Deploy",
     type: "Topic4",
     startTime: "2020-03-08",
@@ -101,6 +109,7 @@ const MOCK_TOPICS: Campaign[] = [
   },
 
   {
+    id: 9,
     campaign: "John Reed",
     type: "Topic4",
     startTime: "2020-03-13",
@@ -115,8 +124,6 @@ const MOCK_TOPICS: Campaign[] = [
 
 function App() {
   const [topics, setTopics] = useState<Campaign[]>(MOCK_TOPICS);
-
-  console.log("topics", topics);
 
   return (
     <div className="App">

@@ -9,15 +9,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import ColorPicker from "material-ui-color-picker";
 import "./TaskEdit.css";
-
-export interface Campaign {
-  campaign: string;
-  type: string;
-  startTime: string;
-  endTime: string;
-  color: string;
-  contents: Array<any>;
-}
+import { Campaign } from "../types";
 
 interface TaskEditProps {
   data: Campaign[];
@@ -27,6 +19,14 @@ interface TaskEditProps {
   setTopics: (topics: Campaign[]) => void;
 }
 
+/**
+ * Modal that lets the user edit a single campaign
+ * @param data Contains all campaign data
+ * @param campaignData Campaign data of the single campaign to update
+ * @param isOpen Describes wether the modal is opened
+ * @param onChildClick Callback on child click
+ * @param setTopics Handler to update campaigns
+ */
 export const TaskEdit = (props: TaskEditProps) => {
   const [changedCampaign, setChangedCampaign] = useState<Campaign>(
     props.campaignData
@@ -37,12 +37,12 @@ export const TaskEdit = (props: TaskEditProps) => {
   };
 
   useEffect(() => {
-    let timer = setTimeout(() => setChangedCampaign(props.campaignData), 100);
-    return () => {
-      clearTimeout(timer);
-    };
+    setChangedCampaign(props.campaignData);
   }, [props.campaignData]);
 
+  /**
+   * Saves updated campaign in top level state.
+   */
   const saveCampaign = () => {
     const updatedTopics = produce(props.data, draftState => {
       const index = props.data.findIndex(
@@ -55,6 +55,11 @@ export const TaskEdit = (props: TaskEditProps) => {
     props.onChildClick(false);
   };
 
+  /**
+   * Changes local version of the campaign that shall be updated
+   * @param value New value of the field
+   * @param updatedKey Which key of the campaign object shall be updated
+   */
   const changeCampaignData = (value: string, updatedKey: keyof Campaign) => {
     setChangedCampaign({ ...changedCampaign, [updatedKey]: value });
   };
@@ -71,6 +76,7 @@ export const TaskEdit = (props: TaskEditProps) => {
           <DialogTitle id="form-dialog-title">
             {props.campaignData.campaign}
           </DialogTitle>
+
           <DialogContent>
             <TextField
               required
@@ -85,6 +91,7 @@ export const TaskEdit = (props: TaskEditProps) => {
               type="text"
               fullWidth
             />
+
             <TextField
               required
               autoFocus
@@ -98,6 +105,7 @@ export const TaskEdit = (props: TaskEditProps) => {
               type="date"
               fullWidth
             />
+
             <TextField
               required
               autoFocus
@@ -111,9 +119,11 @@ export const TaskEdit = (props: TaskEditProps) => {
               type="date"
               fullWidth
             />
+
             <DialogContentText>
               Pick new color for the campaign:
             </DialogContentText>
+
             <ColorPicker
               className="color-picker"
               name="color"
