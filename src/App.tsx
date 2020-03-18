@@ -103,7 +103,7 @@ const MOCK_TOPICS: Campaign[] = [
     contents: [
       { name: "test15", contentDate: "2020-03-08" },
       { name: "test16", contentDate: "2020-03-13" },
-      { name: "testY", contentDate: "2020-03-12" }
+      { name: "DataX", contentDate: "2020-03-12" }
     ],
     color: "#4c70ea"
   },
@@ -116,8 +116,8 @@ const MOCK_TOPICS: Campaign[] = [
     endTime: "2020-03-16",
     color: "green",
     contents: [
-      { name: "test17", contentDate: "2020-03-13" },
-      { name: "test18", contentDate: "2020-03-16" }
+      { name: "testZ", contentDate: "2020-03-13" },
+      { name: "testY", contentDate: "2020-03-16" }
     ]
   }
 ];

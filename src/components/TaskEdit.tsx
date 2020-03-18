@@ -76,7 +76,6 @@ export const TaskEdit = (props: TaskEditProps) => {
           <DialogTitle id="form-dialog-title">
             {props.campaignData.campaign}
           </DialogTitle>
-
           <DialogContent>
             <TextField
               required
@@ -91,7 +90,6 @@ export const TaskEdit = (props: TaskEditProps) => {
               type="text"
               fullWidth
             />
-
             <TextField
               required
               autoFocus
@@ -105,7 +103,6 @@ export const TaskEdit = (props: TaskEditProps) => {
               type="date"
               fullWidth
             />
-
             <TextField
               required
               autoFocus
@@ -119,11 +116,9 @@ export const TaskEdit = (props: TaskEditProps) => {
               type="date"
               fullWidth
             />
-
             <DialogContentText>
               Pick new color for the campaign:
             </DialogContentText>
-
             <ColorPicker
               className="color-picker"
               name="color"
